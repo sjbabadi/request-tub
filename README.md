@@ -1,6 +1,7 @@
 Implied Schema of Request Bin
 
 Redis K/V Store:
+```json
 [URI] => {
     "Requests": [
       {
@@ -16,7 +17,7 @@ Redis K/V Store:
       }, (...)
     ]
   }
-
+```
 Workflow:
   Main page has a button to create a bin, checkbox for private.
   Clicked the button: 
