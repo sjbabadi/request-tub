@@ -1,4 +1,12 @@
-import JsonRender from './components/JsonRender.js'
+import Request from './components/Request'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link, useParams,
+  useRouteMatch
+} from 'react-router-dom'
+import Home from './components/Home'
+import Bin from './components/Bin'
+
 /*
 
   Bin:
@@ -11,9 +19,33 @@ import JsonRender from './components/JsonRender.js'
         switch on encoding type?
 
 */
+const json = {
+  timestamp: new Date().toString(),
+  method: "POST",
+  query_params: {
+    amount: "400",
+    length: "60",
+    width: "30",
+  },
+  headers: {
+    header1: "value1",
+    header2: "value2",
+  },
+  body: '{"Hi":"I\'m json"}'
+}
 const  App = () => {
+  const match = useRouteMatch('/bin/:slug')
+  const slug = match?.params?.slug
   return (
-    <p>"Hello fellow nerds~~~~~~~!"</p>
+    //<Request data={json} />
+      <Switch>
+        <Route path="/">
+          <Home />
+        </Route>
+        <Route path="/bin/:slug">
+          <Bin slug={slug}/>
+        </Route>
+      </Switch>
   );
 }
 
