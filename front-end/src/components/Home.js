@@ -7,8 +7,8 @@ const Home = () => {
 
   const createBin = (e) => {
     e.preventDefault();
-    const url = bins.create();
-    history.push(url);
+    const uri = bins.create();
+    history.push(uri);
   }
 
   return (

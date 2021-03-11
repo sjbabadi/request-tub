@@ -21,7 +21,7 @@ const Bin = ({ slug }) => {
   return (
     <ul>
       {bin.map(request => 
-        <li key={request.id}><Request data={request} /></li>
+        <li key={request.timestamp}><Request data={request} /></li>
       )}
     </ul>
   )
