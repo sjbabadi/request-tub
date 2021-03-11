@@ -21,7 +21,7 @@ const Request = ({ data }) => {
   const method = data.method;
   const timestamp = data.timestamp;
   const body = data.body;
-  const queryParams = data.queryParams;
+  const queryParams = data.query_params;
   console.log(data)
   const isJson = headers['Content-Type'] && headers['Content-Type']  === 'application/json'
   return (

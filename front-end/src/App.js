@@ -39,11 +39,11 @@ const  App = () => {
   return (
     //<Request data={json} />
       <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
         <Route path="/bin/:slug">
           <Bin slug={slug}/>
+        </Route>
+        <Route path="/">
+          <Home />
         </Route>
       </Switch>
   );
