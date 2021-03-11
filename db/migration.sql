@@ -15,7 +15,5 @@ INSERT INTO bins VALUES ('acms1234', '{
 		"header1": "value1",
 		"header2": "value2"
 	},
-	"body": {
-		"Hi": "I am json"
-	}
+	"body": "{\"Hi\": \"I am json\"}"
 }');
