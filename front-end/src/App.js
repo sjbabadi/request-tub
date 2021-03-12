@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import Home from './components/Home'
 import Bin from './components/Bin'
+import Header from './components/Header'
 
 /*
   Bin:
@@ -36,6 +37,8 @@ const  App = () => {
   const slug = match?.params?.slug
   return (
     //<Request data={json} />
+    <div>
+      <Header />
       <Switch>
         <Route path="/bin/:slug">
           <Bin slug={slug}/>
@@ -44,6 +47,7 @@ const  App = () => {
           <Home />
         </Route>
       </Switch>
+    </div>
   );
 }
 export default App;
