@@ -77,12 +77,15 @@ const Bin = ({ slug }) => {
     // <p>{JSON.stringify(tub)}</p>
     // </p>
     <main>
-      <h3>Bin Api URL:</h3>
-      <h4><code>{`http://localhost:4000/${slug}`}</code></h4>
-      {tub && 
-        tub.map(request => 
-        <Request  key={request.timestamp} data={JSON.stringify(request)} />
-      )}
+      <h3 class="mt-8 text-center text-2xl">Bin Api URL:</h3>
+      <h4 class="mt-2 text-center text-2xl"><code class="bg-gray-300 hover:bg-gray-400 p-2 rounded">{`http://localhost:4000/${slug}`}</code></h4>
+      <div class="flex flex-col items-center">
+        {tub &&
+          tub.map(request => 
+            <Request  key={request.timestamp} data={JSON.stringify(request)} />
+          )
+        }
+      </div>
     </main>
   )
 }
