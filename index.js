@@ -36,6 +36,15 @@ app.post("/bins", async (req, res) => {
   }
 });
 
+// return the json of requests data
+app.get('/data/:slug', async(req, res) => {
+  const _slug = req.params.slug;
+  const sql = 'SELECT requests FROM bins WHERE slug = $1';
+  const values = [_slug];
+  const { rows } = await pool.query(sql, values);
+  return rows[0];
+});
+
 /*
 Sheila post request sample 
 app.post("/todos", async (req, res) => {
