@@ -79,12 +79,10 @@ const Bin = ({ slug }) => {
     <main>
       <h3>Bin Api URL:</h3>
       <h4><code>{`http://localhost:4000/${slug}`}</code></h4>
-    <ul>
       {tub && 
         tub.map(request => 
-        <li key={request.timestamp}><Request data={JSON.stringify(request)} /></li>
+        <Request  key={request.timestamp} data={JSON.stringify(request)} />
       )}
-    </ul>
     </main>
   )
 }
