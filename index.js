@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 const cors = require("cors");
 const pool = require('./db/db');
+const path = require('path');
 const { nanoid } = require('nanoid');
 
 app.use(cors());
@@ -42,7 +43,7 @@ app.get('/data/:slug', async(req, res) => {
   const sql = 'SELECT requests FROM bins WHERE slug = $1';
   const values = [_slug];
   const { rows } = await pool.query(sql, values);
-  return rows[0];
+  res.json(rows[0]);
 });
 
 methods = ['get', 'post', 'put', 'patch', 'delete']

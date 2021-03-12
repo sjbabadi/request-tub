@@ -17,6 +17,7 @@
   }
 */
 const Request = ({ data }) => {
+  data = JSON.parse(data);
   const headers = data.headers;
   const method = data.method;
   const timestamp = data.timestamp;
@@ -50,7 +51,7 @@ const Request = ({ data }) => {
         </code>
       </li>
       <li>
-        body: <code>{body}</code>
+        body: <code>{JSON.stringify(body)}</code>
       </li>
     </ul>
   );
