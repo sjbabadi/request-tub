@@ -66,8 +66,10 @@ methods.forEach(method => {
     if(!prevRequests.length) {
       prevRequests = [];
     }
-
-    prevRequests.push(request);
+    prevRequests = [request, ...prevRequests]
+    if (prevRequests.length > 20) {
+      prevRequests = prevRequests.slice(0, 20)
+    }
     console.log(prevRequests);
 
     const sql = 'UPDATE bins SET requests = $1 WHERE slug = $2 RETURNING *';
