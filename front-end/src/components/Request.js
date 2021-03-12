@@ -28,7 +28,7 @@ const Request = ({ data }) => {
   console.log(isJson)
   const nestedClass = "ml-8 text-xs"
   return (
-    <div class="p-3 mt-3 bg-indigo-200 inline-block">
+    <div class="p-3 mt-3 bg-indigo-200 border-2 border-indigo-400 rounded inline-block">
     <ul>
       <li>timestamp: <code>{timestamp}<br /></code></li>
       <li>method: <code>{method}</code> <br /></li>
