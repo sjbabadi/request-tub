@@ -7,8 +7,10 @@ const Home = () => {
 
   const createBin = (e) => {
     e.preventDefault();
-    const uri = bins.create();
-    history.push(`/bin/${uri}`);
+    const uri = bins.create().then(uri => 
+      history.push(`/bin/${uri}`);
+    );
+    
   }
 
   return (
