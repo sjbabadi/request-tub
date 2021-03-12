@@ -9,6 +9,10 @@ app.use(express.json());
 
 app.use(express.static('build'));
 
+app.get('/bin/:slug', (req, res) => {
+  res.sendFile(path.join(__dirname, '/build', 'index.html'))
+})
+
 app.get('/', async (req, res) => {
   try {
     const allRequests = await pool.query("SELECT * FROM bins");
