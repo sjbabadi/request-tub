@@ -45,6 +45,39 @@ app.get('/data/:slug', async(req, res) => {
   return rows[0];
 });
 
+methods = ['get', 'post', 'put', 'patch', 'delete']
+methods.forEach(method => {
+  app[method]('/:slug', async (req, res) => {
+    // req.params, req.headers, req.body
+    const slug = req.params.slug;
+    const request = {};
+    request.headers = req.headers;
+    request.method = method;
+    request.timestamp = new Date();
+    request.body = req.body;
+    request.query_params = req.query;
+    console.log(request);
+
+    const { rows } = await pool.query('SELECT requests FROM bins WHERE slug = $1', [slug]);
+
+    
+    let prevRequests = rows[0].requests;
+    if(!prevRequests.length) {
+      prevRequests = [];
+    }
+
+    prevRequests.push(request);
+    console.log(prevRequests);
+
+    const sql = 'UPDATE bins SET requests = $1 WHERE slug = $2 RETURNING *';
+    const values = [JSON.stringify(prevRequests), slug];
+    const newReq = await pool.query(sql, values);
+    console.log(newReq.rows[0]);
+    res.status(204).end();
+  })
+})
+
+
 /*
 Sheila post request sample 
 app.post("/todos", async (req, res) => {
