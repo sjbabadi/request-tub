@@ -4,7 +4,7 @@ import bins from '../services/bins'
 import Request from './Request'
 
 const Bin = ({ slug }) => {
-  const [bin, setBin] = useState({})
+  const [tub, setTub] = useState(null)
 //    uri: 'http://dummy.net',
 //    request: [
 //      {
@@ -54,20 +54,26 @@ const Bin = ({ slug }) => {
   const history = useHistory()
 
   useEffect(() => {
-    bins.get(slug).then(bin => {
-      if (bin) {
-        setBin(bin)
+    bins.get(slug).then(result => {
+      if (result) {
+        console.log('tub', result);
+        setTub(result.requests)
       } else {
         // TODO: render 404 page instead
         history.push('/')
       }
     })
-  }, [ slug, bin, history])
-
-  return !bin ? null : (
+  }, [])
+  
+  return (
+    // <p>
+    // <p>in tub {slug}</p>
+    // <p>{JSON.stringify(tub)}</p>
+    // </p>
     <ul>
-      {bin?.request?.map(request => 
-        <li key={request.timestamp}><Request data={request} /></li>
+      {tub && 
+        tub.map(request => 
+        <li key={request.timestamp}><Request data={JSON.stringify(request)} /></li>
       )}
     </ul>
   )

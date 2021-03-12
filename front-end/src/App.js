@@ -8,7 +8,6 @@ import Home from './components/Home'
 import Bin from './components/Bin'
 
 /*
-
   Bin:
     Requests (list, sort by timestamp)
       URI
@@ -17,7 +16,6 @@ import Bin from './components/Bin'
       Parameters (list, collapseable)
       Body
         switch on encoding type?
-
 */
 const json = {
   timestamp: new Date().toString(),
@@ -48,5 +46,4 @@ const  App = () => {
       </Switch>
   );
 }
-
 export default App;
