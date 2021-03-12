@@ -4,11 +4,11 @@ import bins from '../services/bins'
 
 const Home = () => {
   const history = useHistory();
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
   
   const createBin = (e) => {
     e.preventDefault();
-    setDisabled(false);
+    setDisabled(true);
     const uri = bins.create().then(uri => { 
       history.push(`/bin/${uri}`);
     });
