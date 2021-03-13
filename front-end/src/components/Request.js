@@ -24,9 +24,9 @@ const Request = ({ data }) => {
   const body = data.body;
   const queryParams = data.query_params;
   const isJson = !!headers['Content-Type'] && headers['Content-Type']  === 'application/json'
-  const nestedClass = "ml-8 text-xs"
+  const nestedClass = "ml-8 text-xs truncate"
   return (
-    <div className="p-3 mt-3 bg-indigo-200 border-2 border-indigo-400 rounded inline-block">
+    <div className="p-3 mt-3 w-11/12 bg-indigo-200 border-2 border-indigo-400 rounded inline-block">
     <ul>
       <li>timestamp: <code>{timestamp}<br /></code></li>
       <li>method: <code>{method}</code> <br /></li>
