@@ -22,13 +22,11 @@ const Request = ({ data }) => {
   const method = data.method;
   const timestamp = data.timestamp;
   const body = data.body;
-  console.log(body, typeof body, body.constructor)
   const queryParams = data.query_params;
   const isJson = !!headers['Content-Type'] && headers['Content-Type']  === 'application/json'
-  console.log(isJson)
   const nestedClass = "ml-8 text-xs"
   return (
-    <div class="p-3 mt-3 bg-indigo-200 border-2 border-indigo-400 rounded inline-block">
+    <div className="p-3 mt-3 bg-indigo-200 border-2 border-indigo-400 rounded inline-block">
     <ul>
       <li>timestamp: <code>{timestamp}<br /></code></li>
       <li>method: <code>{method}</code> <br /></li>
@@ -37,7 +35,7 @@ const Request = ({ data }) => {
         <code>
           <ul>
             {Object.keys(headers).map(key => 
-              <li class={nestedClass} key={key}> {key}: {headers[key]}<br/> </li>
+              <li className={nestedClass} key={key}> {key}: {headers[key]}<br/> </li>
             )}
           </ul>
         </code>
@@ -48,7 +46,7 @@ const Request = ({ data }) => {
         <code>
           <ul>
             {Object.keys(queryParams).map(key => 
-              <li class={nestedClass} key={key}>{key}: {queryParams[key]}</li>
+              <li className={nestedClass} key={key}>{key}: {queryParams[key]}</li>
             )}
           </ul>
         </code>

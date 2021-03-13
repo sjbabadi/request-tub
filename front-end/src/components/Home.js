@@ -15,12 +15,12 @@ const Home = () => {
   }
 
   return (
-    <div class="pt-10 text-xl flex flex-col items-center ">
-      <p class="inline-block font-bold text-2xl">Welcome!</p>
-      <p class="mt-8 inline-block ">Request Tub is a place where you can send your API calls or webhooks to gain valuable insight on their structure.</p>
-      <p class="mt-8 inline-block ">Tubs are ephemeral and disappear after 48 hours, and hold only the latest 20 requests.</p>
-      <p class="mt-8 inline-block ">Click "Create Tub" to get started!</p>
-      <button disabled={disabled} class="mt-8 bg-blue-500 hover:bg-blue-700 disabled:bg-gray-300 disabled:border-gray-500 text-white font-bold py-2 px-4 border border-blue-700 rounded" onClick={createBin}>Create Tub</button>
+    <div className="pt-10 text-xl flex flex-col items-center ">
+      <p className="inline-block font-bold text-2xl">Welcome!</p>
+      <p className="mt-8 inline-block ">Request Tub is a place where you can send your API calls or webhooks to gain valuable insight on their structure.</p>
+      <p className="mt-8 inline-block ">Tubs are ephemeral and disappear after 48 hours, and hold only the latest 20 requests.</p>
+      <p className="mt-8 inline-block ">Click "Create Tub" to get started!</p>
+      <button disabled={disabled} className="mt-8 bg-blue-500 hover:bg-blue-700 disabled:bg-gray-300 disabled:border-gray-500 text-white font-bold py-2 px-4 border border-blue-700 rounded" onClick={createBin}>Create Tub</button>
     </div>
   )
 };
