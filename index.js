@@ -61,22 +61,27 @@ methods.forEach(method => {
 
     const { rows } = await pool.query('SELECT requests FROM bins WHERE slug = $1', [slug]);
 
-    
-    let prevRequests = rows[0].requests;
-    if(!prevRequests.length) {
-      prevRequests = [];
-    }
-    prevRequests = [request, ...prevRequests]
-    if (prevRequests.length > 20) {
-      prevRequests = prevRequests.slice(0, 20)
-    }
-    console.log(prevRequests);
+    console.log('rows',rows);
+    if (!rows[0]) {
+      console.log(`bad request to non-existent tub ${slug}`)
+      res.status(404).end();
+    } else {
+      let prevRequests = rows[0].requests;
+      if(!prevRequests.length) {
+        prevRequests = [];
+      }
+      prevRequests = [request, ...prevRequests]
+      if (prevRequests.length > 20) {
+        prevRequests = prevRequests.slice(0, 20)
+      }
+      //console.log(prevRequests);
 
-    const sql = 'UPDATE bins SET requests = $1 WHERE slug = $2 RETURNING *';
-    const values = [JSON.stringify(prevRequests), slug];
-    const newReq = await pool.query(sql, values);
-    console.log(newReq.rows[0]);
-    res.status(204).end();
+      const sql = 'UPDATE bins SET requests = $1 WHERE slug = $2 RETURNING *';
+      const values = [JSON.stringify(prevRequests), slug];
+      const newReq = await pool.query(sql, values);
+      //console.log(newReq.rows[0]);
+      res.status(204).end();
+    }
   })
 })
 
