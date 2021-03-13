@@ -57,11 +57,6 @@ const Bin = ({ slug }) => {
     bins.get(slug).then(result => {
       if (result) {
         let requests = result.requests;
-        requests.sort((a, b) => {
-          let date1 = new Date(a.timestamp);
-          let date2 = new Date(b.timestamp);
-          return date1 < date2 ? 1 : -1;
-        })
         setTub(requests)
       } else {
         // TODO: render 404 page instead
