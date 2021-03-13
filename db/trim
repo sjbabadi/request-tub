@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Trim old records
+
+node ./trim.js
