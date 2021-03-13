@@ -69,7 +69,7 @@ const Bin = ({ slug }) => {
         history.push('/')
       }
     })
-  }, [])
+  }, [history, slug])
   
   return (
     // <p>

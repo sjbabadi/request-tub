@@ -1,7 +1,5 @@
-import Request from './components/Request'
 import {
-  BrowserRouter as Router,
-  Switch, Route, Link, useParams,
+  Switch, Route,
   useRouteMatch
 } from 'react-router-dom'
 import Home from './components/Home'
@@ -18,20 +16,20 @@ import Header from './components/Header'
       Body
         switch on encoding type?
 */
-const json = {
-  timestamp: new Date().toString(),
-  method: "POST",
-  query_params: {
-    amount: "400",
-    length: "60",
-    width: "30",
-  },
-  headers: {
-    header1: "value1",
-    header2: "value2",
-  },
-  body: '{"Hi":"I\'m json"}'
-}
+// const json = {
+//   timestamp: new Date().toString(),
+//   method: "POST",
+//   query_params: {
+//     amount: "400",
+//     length: "60",
+//     width: "30",
+//   },
+//   headers: {
+//     header1: "value1",
+//     header2: "value2",
+//   },
+//   body: '{"Hi":"I\'m json"}'
+// }
 const  App = () => {
   const match = useRouteMatch('/bin/:slug')
   const slug = match?.params?.slug

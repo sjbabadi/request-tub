@@ -9,7 +9,7 @@ const Home = () => {
   const createBin = (e) => {
     e.preventDefault();
     setDisabled(true);
-    const uri = bins.create().then(uri => { 
+    bins.create().then(uri => { 
       history.push(`/bin/${uri}`);
     });
   }
