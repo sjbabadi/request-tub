@@ -23,7 +23,7 @@ const Request = ({ data }) => {
   const timestamp = data.timestamp;
   const body = data.body;
   const queryParams = data.query_params;
-  const isJson = !!headers['Content-Type'] && headers['Content-Type']  === 'application/json'
+  const isJson = !!headers['content-type'] && headers['content-type']  === 'application/json'
   const nestedClass = "ml-8 text-xs truncate"
   return (
     <div className="p-3 mt-3 w-11/12 bg-indigo-200 border-2 border-indigo-400 rounded inline-block">
@@ -52,7 +52,7 @@ const Request = ({ data }) => {
         </code>
       </li>
       <li>
-        body: {isJson ? <code>{JSON.stringify(body)}</code> : null }
+        body: {isJson ? <code style={{whiteSpace: 'pre'}}>{JSON.stringify(body, null, 2)}</code> : String(body) }
       </li>
     </ul>
   </div>
