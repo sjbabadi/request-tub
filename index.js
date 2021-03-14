@@ -6,6 +6,7 @@ const path = require('path');
 const { nanoid } = require('nanoid');
 const http = require("http");
 const socketIo = require("socket.io");
+require("dotenv").config();
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -89,4 +90,5 @@ methods.forEach(method => {
   })
 })
 
-server.listen(4000, () => console.log("#4ize"))
+const PORT = process.env.PORT || 4000
+server.listen(PORT, () => console.log(`#4ize on port ${PORT}`))
