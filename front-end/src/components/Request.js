@@ -52,7 +52,7 @@ const Request = ({ data }) => {
         </code>
       </li>
       <li>
-        body: {isJson ? <code style={{whiteSpace: 'pre'}}>{JSON.stringify(body, null, 2)}</code> : null }
+        body: {isJson ? <code style={{whiteSpace: 'pre'}}>{JSON.stringify(body, null, 2)}</code> : String(body) }
       </li>
     </ul>
   </div>
