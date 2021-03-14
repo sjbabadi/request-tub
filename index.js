@@ -4,11 +4,23 @@ const cors = require("cors");
 const pool = require('./db/db');
 const path = require('path');
 const { nanoid } = require('nanoid');
+const http = require("http");
+const socketIo = require("socket.io");
+
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(cors());
 app.use(express.json());
 
 app.use(express.static('build'));
+
+io.on("connection", (socket) => {
+  console.log("New client");
+  socket.on("NewClient", (slug) => {
+    console.log('slug: ', slug);
+  })
+});
 
 app.get('/bin/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, '/build', 'index.html'))
@@ -99,4 +111,4 @@ app.post("/todos", async (req, res) => {
 });
 */
 
-app.listen(4000, () => console.log("#4ize"))
+server.listen(4000, () => console.log("#4ize"))
