@@ -24,11 +24,11 @@ io.on("connection", (socket) => {
   })
 });
 
-app.get('/bin/:slug', (req, res) => {
+app.get('/tub/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, '/build', 'index.html'))
 })
 
-app.post("/bins", async (req, res) => {
+app.post("/tubs", async (req, res) => {
   try {
     const newSlug = nanoid();
     const sql = 'INSERT INTO bins (slug) VALUES($1)';

@@ -31,14 +31,14 @@ import Header from './components/Header'
 //   body: '{"Hi":"I\'m json"}'
 // }
 const  App = () => {
-  const match = useRouteMatch('/bin/:slug')
+  const match = useRouteMatch('/tub/:slug')
   const slug = match?.params?.slug
   return (
     //<Request data={json} />
     <div>
       <Header />
       <Switch>
-        <Route path="/bin/:slug">
+        <Route path="/tub/:slug">
           <Bin slug={slug}/>
         </Route>
         <Route path="/">
