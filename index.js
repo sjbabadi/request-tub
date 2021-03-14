@@ -4,41 +4,44 @@ const cors = require("cors");
 const pool = require('./db/db');
 const path = require('path');
 const { nanoid } = require('nanoid');
+const http = require("http");
+const socketIo = require("socket.io");
+require("dotenv").config();
+
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(cors());
 app.use(express.json());
 
 app.use(express.static('build'));
 
-app.get('/bin/:slug', (req, res) => {
+io.on("connection", (socket) => {
+  console.log("New client");
+  socket.on("NewClient", (slug) => {
+    console.log('slug: ', slug);
+    socket.join(slug);
+  })
+});
+
+app.get('/tub/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, '/build', 'index.html'))
 })
 
-app.get('/', async (req, res) => {
-  try {
-    const allRequests = await pool.query("SELECT * FROM bins");
-    res.json(allRequests.rows);
-    console.log(allRequests);
-  } catch (err) {
-    console.log(err.message);
-  }
-
-});
-
-app.post("/bins", async (req, res) => {
+app.post("/tubs", async (req, res) => {
   try {
     const newSlug = nanoid();
     const sql = 'INSERT INTO bins (slug) VALUES($1)';
     const values = [newSlug];
     await pool.query(sql, values);
-    res.json({"uri": newSlug});
-  } catch(err) {
+    res.json({ "uri": newSlug });
+  } catch (err) {
     console.error(err.message);
   }
 });
 
 // return the json of requests data
-app.get('/data/:slug', async(req, res) => {
+app.get('/data/:slug', async (req, res) => {
   const _slug = req.params.slug;
   const sql = 'SELECT requests FROM bins WHERE slug = $1';
   const values = [_slug];
@@ -61,13 +64,13 @@ methods.forEach(method => {
 
     const { rows } = await pool.query('SELECT requests FROM bins WHERE slug = $1', [slug]);
 
-    console.log('rows',rows);
+    console.log('rows', rows);
     if (!rows[0]) {
       console.log(`bad request to non-existent tub ${slug}`)
       res.status(404).end();
     } else {
       let prevRequests = rows[0].requests;
-      if(!prevRequests.length) {
+      if (!prevRequests.length) {
         prevRequests = [];
       }
       prevRequests = [request, ...prevRequests]
@@ -80,23 +83,12 @@ methods.forEach(method => {
       const values = [JSON.stringify(prevRequests), slug];
       const newReq = await pool.query(sql, values);
       //console.log(newReq.rows[0]);
+      io.to(slug).emit("UpdateTub", { requests: prevRequests });
+
       res.status(204).end();
     }
   })
 })
 
-
-/*
-Sheila post request sample 
-app.post("/todos", async (req, res) => {
-  try {
-    const { text } = req.body;
-    const newTodo = await pool.query("INSERT INTO todo (text) VALUES($1)", [text]);
-    res.json(newTodo.rows[0]);
-  } catch(err) {
-    console.error(err.message);
-  }
-});
-*/
-
-app.listen(4000, () => console.log("#4ize"))
+const PORT = process.env.PORT || 4000
+server.listen(PORT, () => console.log(`#4ize on port ${PORT}`))

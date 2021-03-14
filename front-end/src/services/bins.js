@@ -5,12 +5,12 @@ const get = (slug) => {
   return request.then(response => {
     return response.data
   }).catch(err => {
-      console.log(err)
-    })
+    console.log(err)
+  })
 }
 
 const create = () => {
-  const request = axios.post('/bins')
+  const request = axios.post('/tubs')
   return request.then(response => response.data.uri)
 }
 

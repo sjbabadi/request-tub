@@ -10,7 +10,7 @@ const Home = () => {
     e.preventDefault();
     setDisabled(true);
     bins.create().then(uri => { 
-      history.push(`/bin/${uri}`);
+      history.push(`/tub/${uri}`);
     });
   }
 
