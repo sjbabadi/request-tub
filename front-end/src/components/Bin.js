@@ -15,8 +15,11 @@ const Bin = ({ slug }) => {
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
     socket.emit("NewClient", slug);
+    socket.on('UpdateTub', ({ requests }) => {
+      setTub(requests)
+    })
     return () => socket.disconnect();
-  }, []);
+  }, [slug]);
 
   useEffect(() => {
     bins.get(slug).then(result => {
@@ -30,7 +33,7 @@ const Bin = ({ slug }) => {
     })
   }, [history, slug])
 
- return (
+  return (
     // <p>
     // <p>in tub {slug}</p>
     // <p>{JSON.stringify(tub)}</p>
@@ -43,8 +46,8 @@ const Bin = ({ slug }) => {
       </CopyToClipboard>
       <div className="flex flex-col items-center">
         {tub &&
-          tub.map(request => 
-            <Request  key={request.timestamp} data={JSON.stringify(request)} />
+          tub.map(request =>
+            <Request key={request.timestamp} data={JSON.stringify(request)} />
           )
         }
       </div>
