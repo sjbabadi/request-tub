@@ -10,7 +10,6 @@ const get = (slug) => {
 }
 
 const create = () => {
-  console.log('api url: ', process.env.REACT_APP_API_URL)
   const request = axios.post(`/tubs`)
   return request.then(response => response.data.uri)
 }

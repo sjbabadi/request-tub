@@ -28,6 +28,8 @@ services:
       - CONNECTION_STRING=postgres://sjbabadi:password@db/request_bin
     depends_on:
       - db
+    ports:
+      - "4000:4000"
     networks:
       - requestbin-frontend
       - requestbin-backend

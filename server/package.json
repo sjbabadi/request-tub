@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon server/index.js",
-    "build": "rm -rf ../build && cd ../front-end && npm run build && mv build ../build",
+    "build": "rm -rf ./build && cd ../front-end && npm run build && mv build ../server/build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
