@@ -4,7 +4,7 @@ services:
     image: postgres
     environment:
       POSTGRES_USER: sjbabadi
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: password2
       POSTGRES_DB: request_bin
     volumes:
       - ./server/db/migration.sql:/docker-entrypoint-initdb.d/init.sql
@@ -25,7 +25,7 @@ services:
   api:
     build: ./server
     environment:
-      - CONNECTION_STRING=postgres://sjbabadi:password@db/request_bin
+      - CONNECTION_STRING=postgres://sjbabadi:password2@db/request_bin
     depends_on:
       - db
     ports:
