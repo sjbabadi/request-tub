@@ -16,4 +16,5 @@ jobs:
           script: |
             pwd
             ls
+            echo "Hello from my github action on my VPS."
           
