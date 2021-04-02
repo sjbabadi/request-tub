@@ -22,7 +22,9 @@ jobs:
             username: sjbabadi
             password: ${{ secrets.DOCKER_TOKEN }}
       - name: Publish to registry
-        run: docker push ${DOCKER_USER}/${IMAGE_NAME}
+        run: |
+          docker tag ${IMAGE_NAME} ${DOCKER_USER}/${IMAGE_NAME}
+          docker push ${DOCKER_USER}/${IMAGE_NAME}
 
   deploy:
     needs: build-and-push
