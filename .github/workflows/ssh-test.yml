@@ -1,8 +1,27 @@
 name: SSH test
 
-on: [push]
+on: 
+  pull_request:
+    types: [opened, edited, reopened]
+env:
+  IMAGE_NAME: request-bin-api
+  IMAGE_DIR: server
+  DOCKER_USER: sjbabadi
 
 jobs:
+  build-and-push:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v1
+      - name: Publish to registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: $DOCKER_USER/#IMAGE_NAME
+          username: $DOCKER_USER
+          password: ${{  secrets.DOCKER_PASSWORD }}
+          workdir: $IMAGE_DIR
+
   access_droplet:
     runs-on: ubuntu-18.04
     steps:
@@ -14,7 +33,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            pwd
-            ls
-            echo "Hello from my github action on my VPS."
+            cd request-bin
+            docker-compose up --build -d
+
           

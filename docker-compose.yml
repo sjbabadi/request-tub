@@ -23,7 +23,7 @@ services:
   #     - requestbin-frontend
 
   api:
-    build: ./server
+    image: sjbabadi/request-bin-api
     environment:
       - CONNECTION_STRING=postgres://sjbabadi:password2@db/request_bin
     depends_on:
