@@ -14,13 +14,15 @@ jobs:
     steps:
       - name: Checkout PR code
         uses: actions/checkout@v1
-      - name: Publish to registry
-        uses: elgohr/Publish-Docker-Github-Action@master
+      - name: Build api image
+        run: docker build -t ${IMAGE_NAME} ./server
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
         with:
-          name: ${DOCKER_USER}/${IMAGE_NAME}
-          username: ${DOCKER_USER}
-          password: ${{  secrets.DOCKER_PASSWORD }}
-          workdir: ${IMAGE_DIR}
+            username: ${DOCKER_USER}
+            password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Publish to registry
+        run: docker push ${DOCKER_USER}/${IMAGE_NAME}
 
   deploy:
     needs: build-and-push
