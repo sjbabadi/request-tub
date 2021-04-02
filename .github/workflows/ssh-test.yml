@@ -5,7 +5,7 @@ on:
     types: [opened, edited, reopened]
 env:
   IMAGE_NAME: request-bin-api
-  IMAGE_DIR: server
+  IMAGE_DIR: ./server
   DOCKER_USER: sjbabadi
 
 jobs:
