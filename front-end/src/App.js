@@ -1,10 +1,7 @@
-import {
-  Switch, Route,
-  useRouteMatch
-} from 'react-router-dom'
-import Home from './components/Home'
-import Bin from './components/Bin'
-import Header from './components/Header'
+import { Switch, Route, useRouteMatch } from "react-router-dom";
+import Home from "./components/Home";
+import Bin from "./components/Bin";
+import Header from "./components/Header";
 
 /*
   Bin:
@@ -30,22 +27,22 @@ import Header from './components/Header'
 //   },
 //   body: '{"Hi":"I\'m json"}'
 // }
-const  App = () => {
-  const match = useRouteMatch('/tub/:slug')
-  const slug = match?.params?.slug
+const App = () => {
+  const match = useRouteMatch("/tub/:slug");
+  const slug = match?.params?.slug;
   return (
     //<Request data={json} />
     <div>
       <Header />
       <Switch>
-        <Route path="/tub/:slug">
-          <Bin slug={slug}/>
+        <Route path="/request-bin/tub/:slug">
+          <Bin slug={slug} />
         </Route>
-        <Route path="/">
+        <Route path="/request-bin/">
           <Home />
         </Route>
       </Switch>
     </div>
   );
-}
+};
 export default App;

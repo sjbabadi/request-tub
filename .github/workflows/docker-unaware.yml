@@ -1,0 +1,18 @@
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  output-dockerfile:
+    runs-on: ubuntu 18.04
+    steps:
+      - name: Output Dockerfile
+        id: build-server-df
+        uses: ChristopherDurand/build-node-postgres-react-action
+        with:
+          build-type: npmNodeReact
+        outputs:
+          server-df:
+            description: "dockerfile for the server"
+      - name: Echo Dockerfile
+        run: echo ${{steps.build-server-df.outputs.server-df }}
