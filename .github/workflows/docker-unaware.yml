@@ -1,3 +1,5 @@
+name: Output Dockerfile
+
 on:
   pull_request:
     types: [opened]
