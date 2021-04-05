@@ -1,9 +1,14 @@
 name: Output Dockerfile
 
 on: [push]
+env:
+  SERVER_IMAGE: request-bin-api
+  DB_IMAGE: request-bin-db
+  DOCKER_USER: chrisdurand
+
 
 jobs:
-  output-dockerfile:
+  build-and-push:
     runs-on: ubuntu-18.04
     steps:
       - name: Output Dockerfile
@@ -13,5 +18,10 @@ jobs:
           build-type: "npmNodeReact"
           schema:
           seed-data:
-      - name: echo df
-        run: echo "${{steps.build-server-df.outputs.server-df }}"
+      - name: Checkout PR Code
+        run: actions/checkout@v1
+      - name: Build Backend Image
+        run: echo -e '${{steps.build-server-df.outputs.server-df}}' |\ #Pipe the dockerfile in
+          docker build \ #
+          -t chrisdurand:latest \ 
+          -f- . #Get the dockerfile from std in, and use the current directory as the build context
