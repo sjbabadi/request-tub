@@ -13,6 +13,9 @@ jobs:
         uses: ChristopherDurand/build-node-postgres-react-action@v7
         with:
           build-type: npmNodeReact
+        outputs:
+          server-df:
+            description: "dockerfile output"
 
   echo-dockerfile:
     needs: output-dockerfile
