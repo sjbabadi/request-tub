@@ -12,6 +12,6 @@ jobs:
         id: build-server-df
         uses: ChristopherDurand/build-node-postgres-react-action@v7
         with:
-          build-type: 'npmNodeReact'
-      -name: echo df
+          build-type: "npmNodeReact"
+      - name: echo df
         run: echo "${{steps.build-server-df.outputs.server-df }}"
