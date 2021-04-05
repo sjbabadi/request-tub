@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Output Dockerfile
         id: build-server-df
-        uses: ChristopherDurand/build-node-postgres-react-action@v6
+        uses: ChristopherDurand/build-node-postgres-react-action@v7
         with:
           build-type: npmNodeReact
 
