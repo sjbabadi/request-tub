@@ -5,6 +5,8 @@ on: [push]
 jobs:
   output-dockerfile:
     runs-on: ubuntu 18.04
+    outputs:
+      server-df: ${{steps.build-server-df.server-df}}
     steps:
       - name: Output Dockerfile
         id: build-server-df
