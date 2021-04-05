@@ -9,6 +9,8 @@ Setting up the cron job
 
 */
 
-const pool = require('./db/db');
+const pool = require("./db/db");
 
-await pool.query("delete * from bins where created_at < now() - interval '2 days'")
+await pool.query(
+  "delete from bins where created_at < now() - interval '2 days';"
+);

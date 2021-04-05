@@ -5,13 +5,13 @@ on: [push]
 jobs:
   output-dockerfile:
     runs-on: ubuntu-18.04
-    outputs:
-      server-df: ${{steps.build-server-df.server-df}}
     steps:
       - name: Output Dockerfile
         id: build-server-df
         uses: ChristopherDurand/build-node-postgres-react-action@v7
         with:
           build-type: "npmNodeReact"
+          schema:
+          seed-data:
       - name: echo df
         run: echo "${{steps.build-server-df.outputs.server-df }}"
