@@ -19,4 +19,4 @@ jobs:
     runs-on: ubuntu 18.04
     steps:
       - name: Echo Dockerfile
-        run: echo ${{jobs.build-server-df.steps.build-server-df.server-df }}
+        run: echo ${{needs.output-dockerfile.outputs.server-df }}
