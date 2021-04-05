@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   output-dockerfile:
-    runs-on: ubuntu 18.04
+    runs-on: ubuntu-18.04
     outputs:
       server-df: ${{steps.build-server-df.server-df}}
     steps:
@@ -16,7 +16,7 @@ jobs:
 
   echo-dockerfile:
     needs: output-dockerfile
-    runs-on: ubuntu 18.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Echo Dockerfile
         run: echo ${{needs.output-dockerfile.outputs.server-df }}
