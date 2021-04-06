@@ -5,23 +5,34 @@ env:
   SERVER_IMAGE: request-bin-api
   DB_IMAGE: request-bin-db
   DOCKER_USER: chrisdurand
-
+  DB_USER: superadmin
+  DB_PASS: superpassword
 
 jobs:
   build-and-push:
     runs-on: ubuntu-18.04
     steps:
-      - name: Output Dockerfile
+      - name: Build Server Dockerfile
         id: build-server-df
         uses: ChristopherDurand/build-node-postgres-react-action@v8
         with:
           build-type: "npmNodeReact"
-          schema:
-          seed-data:
+          react-dir: "./front-end"
+          server-dir: "./server"
       - name: Checkout PR Code
         run: actions/checkout@v1
       - name: Build Backend Image
-        run: echo -e '${{steps.build-server-df.outputs.server-df}}' |\ #Pipe the dockerfile in
-          docker build \ #
-          -t chrisdurand:latest \ 
-          -f- . #Get the dockerfile from std in, and use the current directory as the build context
+        run: |
+          echo -e '${{steps.build-server-df.outputs.dockerfile}}' | \
+          docker build -t \
+          ${SERVER_IMAGE} -f- . #Gets the docker file from stdin: thats what the -f- means
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${DOCKER_USER}
+          password: ${secrets.DOCKER_TOKEN}}
+      - name: Publish Image
+        run: |
+          docker tag ${IMAGE_NAME} ${DOCKER_USER}
+          docker push ${DOCKER_USER}/${IMAGE_NAME}
+      - name: Create Compose File

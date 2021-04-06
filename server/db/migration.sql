@@ -1,3 +1,9 @@
+CREATE TABLE bins (
+  slug varchar(255) PRIMARY KEY, 
+  requests JSONB DEFAULT '[]'::jsonb,
+  created_at timestamp DEFAULT NOW()
+);
+
 INSERT INTO bins VALUES ('acms1234', '[
   {
     "timestamp": "2021-10-03 9:39:30",
