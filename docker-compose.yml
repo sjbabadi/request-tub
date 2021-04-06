@@ -1,0 +1,27 @@
+version: "3"
+services:
+  api:
+    image: request-tub-3
+    environment:
+      - CONNECTION_STRING=postgres://melinda:password@db/request_bin
+    depends_on:
+      - db
+    ports: 
+      - "4000:4000"
+    networks:
+      - request-tub-backend
+
+  db:
+    image: postgres
+    environment: 
+      POSTGRES_USER: melinda
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: request_bin
+    volumes:
+      - ./server/db/migration.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - request-tub-backend
+
+
+networks:
+  request-tub-backend:
