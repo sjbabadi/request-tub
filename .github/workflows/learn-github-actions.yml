@@ -1,10 +1,22 @@
-name: learn-github-actions
-on: [push]
+name: learn-build-and-push-docker
+on: [pull_request]
 jobs:
-  check-bats-version:
+  build-and-push-images:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: npm install -g bats
-      - run: bats -v
+      - 
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        id: request_bin_docker_build_1
+        uses: docker/build-push-actions@v2
+        with:
+          push: true
+          tags: mhlim/request-bin:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
