@@ -1,7 +1,8 @@
 version: "3"
 services:
   api:
-    image: request-tub-4
+    build: ./server
+    image: request-tub-api
     environment:
       - CONNECTION_STRING=postgres://melinda:password@db/request_bin
     depends_on:
