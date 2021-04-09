@@ -19,10 +19,13 @@ name: Publish Image
 #       }
 #    ] Changed a comment
 # }
-on: push
+on:
+  pull_request:
+    types: [opened]
 
 env:
   ECR_REPO: request-bin
+  SERVER_PATH: server/
 jobs:
   build-and-push:
     runs-on: ubuntu-18.04
@@ -52,6 +55,6 @@ jobs:
         run: |
           pack build $ECR_REGISTRY/$ECR_REPO:$GITHUB_SHA \
           --builder gcr.io/buildpacks/builder:v1 \
-          --path server/ \
+          --path $SERVER_PATH \
           --cache-image $ECR_REGISTRY/$ECR_REPO:cache \
           --publish
