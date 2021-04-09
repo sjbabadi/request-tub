@@ -19,7 +19,7 @@ name: Publish Image
 #       }
 #    ]
 # }
-on: [push]
+on: push
 
 env:
   ECR_REPO: request-bin
