@@ -23,7 +23,7 @@ on: push
 
 env:
   ECR_REPO: request-bin
-
+  HASH: ${{ "commit$GITHUB_SHA" }}
 jobs:
   build-and-push:
     runs-on: ubuntu-18.04
