@@ -48,8 +48,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          pack build $ECR_REGISTRY/$ECR_REPOSITORY:c`echo commit$GITHUB_SHA | cut -c1-20` \
+          pack build $ECR_REGISTRY/$ECR_REPOSITORY:`echo commit$GITHUB_SHA | cut -c1-20` \
           --builder gcr.io/buildpacks/builder:v1 \
           --path server/ \
-          --cache-image index.docker.io/chrisdurand/$ECR_REPOSITORY:cache \
+          --cache-image $ECR_REGISTRY/$ECR_REPOSITORY:cache \
           --publish
