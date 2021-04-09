@@ -46,10 +46,10 @@ jobs:
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
-          HASH: ${{ echo commit$GITHUB_SHA | cut -c1-20 }}
+          HASH: ${{  }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          pack build $ECR_REGISTRY/$ECR_REPOSITORY:c$HASH \
+          pack build $ECR_REGISTRY/$ECR_REPOSITORY:c`echo commit$GITHUB_SHA | cut -c1-20` \
           --builder gcr.io/buildpacks/builder:v1 \
           --path server/ \
           --cache-image index.docker.io/chrisdurand/$ECR_REPOSITORY:cache \
