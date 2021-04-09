@@ -43,8 +43,6 @@ jobs:
           sudo add-apt-repository ppa:cncf-buildpacks/pack-cli && \
           sudo apt-get update && \
           sudo apt-get install pack-cli
-      - name: set image tag environment variable
-        run:
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
