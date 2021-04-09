@@ -43,14 +43,15 @@ jobs:
           sudo add-apt-repository ppa:cncf-buildpacks/pack-cli && \
           sudo apt-get update && \
           sudo apt-get install pack-cli
+      - name: set image tag environment variable
+        run:
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
-          HASH: ${ `echo $GITHUB_SHA | cut -c1-10` }
-          IMG_TAG: commit$HASH
+          HASH: ${{ echo commit$GITHUB_SHA | cut -c1-20 }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          pack build $ECR_REGISTRY/$ECR_REPOSITORY:$HASH \
+          pack build $ECR_REGISTRY/$ECR_REPOSITORY:c$HASH \
           --builder gcr.io/buildpacks/builder:v1 \
           --path server/ \
           --cache-image index.docker.io/chrisdurand/$ECR_REPOSITORY:cache \
