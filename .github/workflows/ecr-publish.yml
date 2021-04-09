@@ -40,6 +40,12 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      - name: Install Pack CLI
+        id: install-pack
+        run: |
+          sudo add-apt-repository ppa:cncf-buildpacks/pack-cli && \
+          sudo apt-get update && \
+          sudo apt-get install pack-cli
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
