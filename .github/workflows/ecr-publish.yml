@@ -53,5 +53,5 @@ jobs:
           pack build $ECR_REGISTRY/$ECR_REPO:$GITHUB_SHA \
           --builder gcr.io/buildpacks/builder:v1 \
           --path server/ \
-          --cache-image $ECR_REGISTRY/$ECR_REPOSITORY:cache \
+          --cache-image $ECR_REGISTRY/$ECR_REPO:cache \
           --publish
