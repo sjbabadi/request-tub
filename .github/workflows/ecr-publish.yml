@@ -46,7 +46,7 @@ jobs:
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
-          HASH: ${{ `echo $GITHUB_SHA | cut -c1-10` }}
+          HASH: ${ `echo $GITHUB_SHA | cut -c1-10` }
           IMG_TAG: commit$HASH
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
