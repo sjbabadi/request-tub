@@ -1,0 +1,52 @@
+name: Publish Image
+# Minimum Required Permissions for Pushing and Pulling Images
+# {
+#    "Version":"2012-10-17",
+#    "Statement":[
+#       {
+#          "Sid":"AllowPush",
+#          "Effect":"Allow",
+#          "Action":[
+#             "ecr:GetDownloadUrlForLayer",
+#             "ecr:BatchGetImage",
+#             "ecr:BatchCheckLayerAvailability",
+#             "ecr:PutImage",
+#             "ecr:InitiateLayerUpload",
+#             "ecr:UploadLayerPart",
+#             "ecr:CompleteLayerUpload"
+#          ],
+#          "Resource":"arn:aws:ecr:us-east-1:123456789012:repository/my-repo"
+#       }
+#    ]
+# }
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+env:
+  ECR_REPO: request-bin
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: build, tag, and push image using Google Builder
+        id: build-server
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          pack build $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA \
+          --builder gcr.io/buildpacks/builder:v1 \
+          --path server/ \
+          --cache-image index.docker.io/chrisdurand/$ECR_REPOSITORY:cache \
+          --publish
