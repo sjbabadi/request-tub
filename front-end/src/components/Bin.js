@@ -10,7 +10,7 @@ const Bin = ({ slug }) => {
   const [tub, setTub] = useState(null)
 
   const history = useHistory()
-  const requestURL = `/${slug}`
+  const requestURL = `www.reqbin.sjbabadi.com/${slug}`
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);

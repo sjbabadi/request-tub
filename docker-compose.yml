@@ -1,0 +1,40 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: sjbabadi
+      POSTGRES_PASSWORD: password2
+      POSTGRES_DB: request_bin
+    volumes:
+      - ./server/db/migration.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - requestbin-backend
+
+  # frontend:
+  #   build: ./front-end
+  #   environment:
+  #     - REACT_APP_API_URL="http://api:4000"
+  #   depends_on:
+  #     - api
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - requestbin-frontend
+
+  api:
+    image: sjbabadi/request-bin-api
+    environment:
+      - CONNECTION_STRING=postgres://sjbabadi:password2@db/request_bin
+      - PORT=80
+    depends_on:
+      - db
+    ports:
+      - "4000:80"
+    networks:
+      - requestbin-frontend
+      - requestbin-backend
+
+networks:
+  requestbin-frontend:
+  requestbin-backend:

@@ -14,7 +14,7 @@ const io = socketIo(server);
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static('build'));
+app.use(express.static('./build'));
 
 io.on("connection", (socket) => {
   console.log("New client");
@@ -46,7 +46,11 @@ app.get('/data/:slug', async (req, res) => {
   const sql = 'SELECT requests FROM bins WHERE slug = $1';
   const values = [_slug];
   const { rows } = await pool.query(sql, values);
-  res.json(rows[0]);
+  if(!rows[0].requests.length) {
+   res.json([]); 
+  } else {
+    res.json(rows[0]);
+  }
 });
 
 methods = ['get', 'post', 'put', 'patch', 'delete']
