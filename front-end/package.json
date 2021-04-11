@@ -40,7 +40,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://api:4000",
+  "proxy": "http://api",
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "autoprefixer": "^9.8.6",
