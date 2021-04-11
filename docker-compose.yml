@@ -26,10 +26,11 @@ services:
     image: sjbabadi/request-bin-api
     environment:
       - CONNECTION_STRING=postgres://sjbabadi:password2@db/request_bin
+      - PORT=80
     depends_on:
       - db
     ports:
-      - "4000:4000"
+      - "4000:80"
     networks:
       - requestbin-frontend
       - requestbin-backend

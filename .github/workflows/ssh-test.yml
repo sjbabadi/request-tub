@@ -40,7 +40,7 @@ jobs:
           script: |
             cd request-bin
             docker-compose down
-            docker-compose pull
+            docker-compose pull ${IMAGE_NAME}
             docker-compose up --build -d
 
           
