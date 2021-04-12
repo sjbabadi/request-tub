@@ -1,24 +1,4 @@
-name: Publish Image
-# Minimum Required Permissions for Pushing and Pulling Images
-# {
-#    "Version":"2012-10-17",
-#    "Statement":[
-#       {
-#          "Sid":"AllowPush",
-#          "Effect":"Allow",
-#          "Action":[
-#             "ecr:GetDownloadUrlForLayer",
-#             "ecr:BatchGetImage",
-#             "ecr:BatchCheckLayerAvailability",
-#             "ecr:PutImage",
-#             "ecr:InitiateLayerUpload",
-#             "ecr:UploadLayerPart",
-#             "ecr:CompleteLayerUpload"
-#          ],
-#          "Resource":"arn:aws:ecr:us-east-1:123456789012:repository/my-repo"
-#       }
-#    ] Changed a comment
-# }
+name: Publish Image to ECR
 on:
   pull_request:
     types: [opened]
