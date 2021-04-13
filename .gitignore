@@ -4,3 +4,4 @@ front-end/node_modules
 build/*
 .github/workflows/clone.yml
 .github/workflows/test.yml
+task.json
