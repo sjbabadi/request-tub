@@ -24,4 +24,4 @@ jobs:
 
       - name: print PR name
         run: |
-          echo $GITHUB_REF
+          echo ${{ github.event.pull_request.number }}
