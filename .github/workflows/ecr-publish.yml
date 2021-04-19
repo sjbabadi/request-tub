@@ -25,7 +25,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: $REGION
+          aws-region: ${{ env.REGION }}
 
         # Not passing a registry so it uses the default one.
         # We might ahve to create a registry during the set up script.
@@ -107,10 +107,10 @@ jobs:
           seed-arn: ${{ env.seed-arn }}
           db-name: request_bin
           efs-id: ${{ env.efs-id }}
-          app-name: $PROJECT
+          app-name: ${{ env.PROJECT
           task-execution-role-arn: ${{ env.task-execution-role-arn }}
-          region: $REGION
-          pr-number: $PR_NUMBER
+          region: ${{ env.REGION}}
+          pr-number: ${{ env.PR_NUMBER}}
 
       - name: Log the task definition to the console.
         run: echo ${{ steps.task-gen.outputs.task-definition }}
