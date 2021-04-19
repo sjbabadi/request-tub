@@ -20,6 +20,6 @@ jobs:
           SUCKS: "tag"
           NUMBER: "version"
         run: |
-          echo "thing=`$THIS/$EXAMPLE:$SUCKS-$NUMBER`" >> $GITHUB_ENV
+          echo "thing=$THIS/$EXAMPLE:$SUCKS-$NUMBER" >> $GITHUB_ENV
       - run: |
           echo ${{ env.thing }}
