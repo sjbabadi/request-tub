@@ -1,0 +1,27 @@
+name: test pr name
+on:
+  pull-request:
+    types: [assigned, opened, synchronize, reopened]
+
+env:
+  ECR_REPO: request-bin
+  SERVER_PATH: server/
+  BUILDER: gcr.io/buildpacks/builder:v1
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: print PR name
+        run: |
+          echo $GITHUB_REF

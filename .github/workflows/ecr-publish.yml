@@ -1,16 +1,21 @@
 name: Publish Image to ECR
-on: [push]
+# on:
+#   pull-request:
+#     types: [opened]
+on: workflow_dispatch
 
 env:
   ECR_REPO: request-bin
   SERVER_PATH: server/
   BUILDER: gcr.io/buildpacks/builder:v1
+
 jobs:
   build-and-push:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -18,15 +23,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+        # Not passing a registry so it uses the default one.
+        # We might ahve to create a registry during the set up script.
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      # with:
+      # registries: [ecr-349823hf398]
+
       - name: Install Pack CLI
         id: install-pack
         run: |
           sudo add-apt-repository ppa:cncf-buildpacks/pack-cli && \
           sudo apt-get update && \
           sudo apt-get install pack-cli
+
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
@@ -36,22 +47,31 @@ jobs:
           --builder $BUILDER \
           --path $SERVER_PATH \
           --publish
+
       - name: set arn environment variable
         id: set-arn
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           echo "image-arn=$ECR_REGISTRY/$ECR_REPO:$GITHUB_SHA" >> $GITHUB_ENV
+
+      # What more do we need access to?
+      # Execution role arn
+      # EFS ID
+      # Mount Target?
+      # Logging?
+      # How do we put that migration file up there?
       - name: write task definition for image
         id: task-gen
         uses: Mush-Framework/create-task-definition@v0.1
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ARN: ${{ steps.login-ecr.outputs.registry }}
         with:
           server-arn: ${{ env.image-arn }}
           migration: db/migration.sql
-          db-name: request-bin
+          db-name: request_bin
           app-name: request-bin
+          execution-role-arn: $EXECUTION_ROLE
+
       - name: Log the task definition to the console.
         run: echo ${{ steps.task-gen.outputs.task-definition }}

@@ -100,6 +100,3 @@ methods.forEach((method) => {
     }
   });
 });
-
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => console.log(`#4ize on port ${PORT}`));
