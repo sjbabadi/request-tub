@@ -3,6 +3,10 @@ on: [push]
 
 env:
   SQL_FILE: server/db/migration.sql
+  ECR_REGISTRY: reg
+  ECR_REPO: chris
+  PROJECT: stuff
+  PR_NUMBER: 3
 jobs:
   build-and-push:
     runs-on: ubuntu-20.04
