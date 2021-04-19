@@ -1,6 +1,6 @@
 name: test pr name
 on:
-  pull-request:
+  pull_request:
     types: [assigned, opened, synchronize, reopened]
 
 env:
