@@ -1,4 +1,4 @@
-name: Test Docker Heredoc
+name: Test Environment Variables
 on: [push]
 
 env:
@@ -13,14 +13,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
-      - name: Create image for SQL Seeder
-        id: make-sql-seeder
+      - name: make arbitrary environment variables
+        env:
+          THIS: "repository"
+          EXAMPLE: "name"
+          SUCKS: "tag"
+          NUMBER: "version"
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER -f- .  <<EOF
-          FROM alpine:3.13
-          COPY $SQL_FILE init.sql
-          RUN echo -e '#!/bin/bash\nmv init.sql efs-file-transfer\nls efs-file-transfer' > ./entrypoint.sh
-          RUN ["chmod", "+x", "./entrypoint.sh"]
-          ENTRYPOINT ["./entrypoint.sh"]
-          EOF
-      - run: docker images
+          echo "thing=`$THIS/$EXAMPLE:$SUCKS-$NUMBER`" >> $GITHUB_ENV
+      - run: |
+        echo ${{ env.thing }}

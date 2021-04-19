@@ -56,8 +56,9 @@ jobs:
           --path $SERVER_PATH \
           --publish
 
-      #This step will do three things:
-      # 1. set the registry environment variable
+      #This step will do four things:
+      # 1. set the server image arn environment variable
+      # 2. set the seeder image arn environment variable
       # 2. Get the Task Execution Role Arn and set it to an environment variable
       # 3. Get the fs-id of our EFS and set it to an environment variable
       - name: set required environment variables
@@ -66,6 +67,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           (echo "image-arn=$ECR_REGISTRY/$ECR_REPO:$GITHUB_SHA" >> $GITHUB_ENV) &&
+          (echo "seed-arn=$ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER" >> $GITHUB_ENV) &&
           (echo "task-execution-role-arn=` \
             aws iam get-role --role-name ecsTaskExecutionRole \
               | jq -r '.Role.Arn'`"  >> $GITHUB_ENV) &&
@@ -104,6 +106,7 @@ jobs:
           server-arn: ${{ env.image-arn }}
           migration: db/migration.sql
           db-name: request_bin
+          efs-id: ${{ env.efs-id }}
           app-name: request-bin
           task-execution-role-arn: ${{ env.task-execution-role-arn }}
 
