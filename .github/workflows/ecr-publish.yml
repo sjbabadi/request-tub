@@ -84,7 +84,7 @@ jobs:
       - name: Create image for SQL Seeder
         id: make-sql-seeder
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER -f- .  <<EOF
+          docker build -t ${{ env.seed-arn }} -f- .  <<EOF
           FROM alpine:3.13
           COPY $SQL_FILE init.sql
           RUN echo -e '#!/bin/bash\nmv init.sql efs-file-transfer\nls efs-file-transfer' > ./entrypoint.sh
@@ -95,20 +95,22 @@ jobs:
       - name: Push image for SQL Seeder to ECR
         id: push-seed
         run: |
-          docker push $ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER
+          docker push ${{ env.seed-arn }}
 
       - name: write task definition for image
         id: task-gen
-        uses: Mush-Framework/create-task-definition@v0.1
+        uses: Mush-Framework/create-task-definition@v0.2
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
           server-arn: ${{ env.image-arn }}
-          migration: db/migration.sql
+          seed-arn: ${{ env.seed-arn }}
           db-name: request_bin
           efs-id: ${{ env.efs-id }}
-          app-name: request-bin
+          app-name: $PROJECT
           task-execution-role-arn: ${{ env.task-execution-role-arn }}
+          region: $REGION
+          pr-number: $PR_NUMBER
 
       - name: Log the task definition to the console.
         run: echo ${{ steps.task-gen.outputs.task-definition }}
