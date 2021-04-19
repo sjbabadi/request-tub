@@ -109,8 +109,15 @@ jobs:
           efs-id: ${{ env.efs-id }}
           app-name: ${{ env.PROJECT }}
           task-execution-role-arn: ${{ env.task-execution-role-arn }}
-          region: ${{ env.REGION}}
+          region: ${{ env.REGION }}
           pr-number: ${{ env.PR_NUMBER}}
 
-      - name: Log the task definition to the console.
-        run: echo ${{ steps.task-gen.outputs.task-definition }}
+      - name: write task definition to file.
+        run: echo '${{ steps.task-gen.outputs.task-definition }}' >> task.json
+      
+      -name: register task definition.
+        run: |
+          aws ecs register-task-definition \
+          --family $PROJECT
+          --cli-input-json file://task.json
+
