@@ -71,7 +71,7 @@ jobs:
           (echo "task-execution-role-arn=` \
             aws iam get-role --role-name ecsTaskExecutionRole \
               | jq -r '.Role.Arn'`"  >> $GITHUB_ENV) &&
-          (echo "efs-id=` \
+          (echo "efs-id=` \ 
             aws efs describe-file-systems --creation-token $FS_TOKEN \
               | jq -r '.FileSystems[0].FileSystemId'`" >> $GITHUB_ENV)
 
@@ -119,5 +119,5 @@ jobs:
       - name: register task definition.
         run: |
           aws ecs register-task-definition \
-          --family $PROJECT
+          --family $PROJECT \
           --cli-input-json file://task.json
