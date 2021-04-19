@@ -99,7 +99,7 @@ jobs:
 
       - name: write task definition for image
         id: task-gen
-        uses: Mush-Framework/create-task-definition@v0.2
+        uses: Mush-Framework/create-task-definition@v0.3.1
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
@@ -114,10 +114,19 @@ jobs:
 
       - name: write task definition to file.
         run: |
-          echo '${{ steps.task-gen.outputs.task-definition }}' >> ./task.json
+          echo '${{ steps.task-gen.outputs.seeder-task-definition }}' >> ./seed-task.json && \
+          echo '${{ steps.task-gen.outputs.service-task-definition }}' >> ./app-task.json
 
-      - name: register task definition.
+      - name: register task definition of seeder.
         run: |
-          aws ecs register-task-definition \
+          echo "seeder-def=`aws ecs register-task-definition \
+          --family $PROJECT-setup \
+          --cli-input-json file://seed-task.json \
+          | jq -r '.taskDefinition | "\(.family):\(.revision)'`" >> $GITHUB_ENV
+
+      - name: register task definition of review app.
+        run: |
+          echo "app-def=`aws ecs register-task-definition \
           --family $PROJECT \
-          --cli-input-json file://task.json
+          --cli-input-json file://app-task.json \
+          | jq -r '.taskDefinition | "\(.family):\(.revision)'`" >> $GITHUB_ENV
