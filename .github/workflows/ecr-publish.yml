@@ -8,7 +8,7 @@ env:
   ECR_REPO: request-bin
   SERVER_PATH: server/
   BUILDER: gcr.io/buildpacks/builder:v1
-  PR: ${{ github.events.pull_request.}}
+  FS_TOKEN: FleetFS
 
 jobs:
   build-and-push:
@@ -39,6 +39,9 @@ jobs:
           sudo apt-get update && \
           sudo apt-get install pack-cli
 
+      - name: Install jq
+        id: install-jq
+        run: sudo apt-get install jq
       - name: build, tag, and push image using Google Builder
         id: build-server
         env:
@@ -48,17 +51,22 @@ jobs:
           --builder $BUILDER \
           --path $SERVER_PATH \
           --publish
-
-      - name: set arn environment variable
-        id: set-arn
+      - name: set required environment variables
+        -id: set-env
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           echo "image-arn=$ECR_REGISTRY/$ECR_REPO:$GITHUB_SHA" >> $GITHUB_ENV
+          echo "task-execution-role-arn=`aws iam get-role \
+                --role-name ecsTaskExecutionRole \
+                | jq '.Role.Arn'`"  >> $GITHUB_ENV
+          echo "efs-id=`aws efs describe-file-systems \
+               --creation-token $FS_TOKEN \
+               | jq -r '.FileSystems[0].FileSystemId'`" >> $GITHUB_ENV
 
       # What more do we need access to?
-      # Execution role arn
-      # EFS ID
+      # Execution role arn -- done
+      # EFS ID -- done
       # Mount Target?
       # Logging?
       # How do we put that migration file up there?
