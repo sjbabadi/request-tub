@@ -116,9 +116,8 @@ jobs:
         run: |
           echo '${{ steps.task-gen.outputs.task-definition }}' >> ./task.json
 
-      -name: register task definition.
-       run: |
+      - name: register task definition.
+        run: |
           aws ecs register-task-definition \
           --family $PROJECT
           --cli-input-json file://task.json
-
