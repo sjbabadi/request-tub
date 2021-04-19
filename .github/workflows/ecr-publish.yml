@@ -8,6 +8,7 @@ env:
   ECR_REPO: request-bin
   SERVER_PATH: server/
   BUILDER: gcr.io/buildpacks/builder:v1
+  PR: ${{ github.events.pull_request.}}
 
 jobs:
   build-and-push:
