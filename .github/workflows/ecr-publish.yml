@@ -1,14 +1,14 @@
 name: Publish Image to ECR
-# on:
-#   pull-request:
-#     types: [opened]
-on: workflow_dispatch
+on:
+  pull-request:
+    types: [opened]
 
 env:
   ECR_REPO: request-bin
   SERVER_PATH: server/
   BUILDER: gcr.io/buildpacks/builder:v1
   FS_TOKEN: FleetFS
+  REGION: us-east-2
 
 jobs:
   build-and-push:
@@ -22,7 +22,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
+          aws-region: $REGION
 
         # Not passing a registry so it uses the default one.
         # We might ahve to create a registry during the set up script.
