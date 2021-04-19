@@ -113,7 +113,8 @@ jobs:
           pr-number: ${{ env.PR_NUMBER}}
 
       - name: write task definition to file.
-        run: echo '${{ steps.task-gen.outputs.task-definition }}' >> task.json
+        run: |
+          echo '${{ steps.task-gen.outputs.task-definition }}' >> task.json
       
       -name: register task definition.
         run: |
