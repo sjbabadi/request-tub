@@ -107,7 +107,7 @@ jobs:
           seed-arn: ${{ env.seed-arn }}
           db-name: request_bin
           efs-id: ${{ env.efs-id }}
-          app-name: ${{ env.PROJECT
+          app-name: ${{ env.PROJECT }}
           task-execution-role-arn: ${{ env.task-execution-role-arn }}
           region: ${{ env.REGION}}
           pr-number: ${{ env.PR_NUMBER}}
