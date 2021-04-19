@@ -62,7 +62,7 @@ jobs:
       # 2. Get the Task Execution Role Arn and set it to an environment variable
       # 3. Get the fs-id of our EFS and set it to an environment variable
       - name: set required environment variables
-        -id: set-env
+        id: set-env
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
