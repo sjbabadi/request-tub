@@ -7,6 +7,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
+      - name: install curl
         env:
           SHCMD: sudo apt update && sudo apt upgrade && sudo apt install curl && echo "HI THERE!"
         run: |
