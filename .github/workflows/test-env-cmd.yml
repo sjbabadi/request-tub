@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v1
       - name: install curl
         env:
-          SHCMD: sudo apt update && sudo apt upgrade && sudo apt install curl && echo "HI THERE!"
+          SHCMD: sudo apt-get update && sudo apt-get upgrade && sudo apt-get install curl && echo "HI THERE!"
         run: |
           $SHCMD
       - name: Complex Shell Command
