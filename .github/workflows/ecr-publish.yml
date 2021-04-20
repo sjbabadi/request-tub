@@ -25,10 +25,10 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     # needs: [teardown]
-    # steps:
-    #   - name: Check Event Type
-    #     if: (it's close)
-    #     run: exit 0
+    steps:
+      #   - name: Check Event Type
+      #     if: (it's close)
+      #     run: exit 0
       - name: Checkout Code
         uses: actions/checkout@v1
 
@@ -142,7 +142,7 @@ jobs:
           --family $PROJECT \
           --cli-input-json file://app-task.json \
           | jq -r '.taskDefinition | "\(.family):\(.revision)'`" >> $GITHUB_ENV
-      
+
       - name: verify the names of the task definitions.
         run: |
           echo ${{ env.app-def }}, ${{ env.seed-def }}
