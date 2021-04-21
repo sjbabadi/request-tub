@@ -193,14 +193,14 @@ jobs:
           echo "service-arn=$(aws ecs create-service \
             --cluster $PROJECT \
             --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA \
-            --task-definition ${{ env.app.def }} \
+            --task-definition ${{ env.app-def }} \
             --desired-count 1 \
             --launch-type FARGATE \
             --network-configuration "awsvpcConfiguration={ \
                 subnets=[${{ env.subnet-id }}], \
                 securityGroups=[${{ env.sg-id }}], \
                 assignPublicIp=ENABLED \
-              }" /
+              }" \
             --query 'service.serviceArn' \
             --output text)" >> $GITHUB_ENV
 
