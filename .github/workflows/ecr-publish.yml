@@ -94,7 +94,7 @@ jobs:
             aws efs describe-file-systems \
               --creation-token $FS_TOKEN \
               --query 'FileSystems[0].FileSystemId' \
-              --output text)""  >> $GITHUB_ENV)
+              --output text)"  >> $GITHUB_ENV)
 
         #TODO: New step: Pull the google builder & cache?
       - name: build, tag, and push image using Google Builder
