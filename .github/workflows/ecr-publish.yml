@@ -8,7 +8,7 @@ env:
   PROJECT: request-bin
   SERVER_PATH: server/
   SQL_FILE: server/db/migration.sql
-  BUILDER: gcr.io/buildpacks/builder:v1
+  BUILDER: paketobuildpacks/builder:base
   DB_NAME: request_bin
   SUBNET_NAME: Fleet-Subnet
   SG_NAME: Fleet-Security-3
@@ -128,7 +128,7 @@ jobs:
 
       - name: write task definition for image
         id: task-gen
-        uses: Mush-Framework/create-task-definition@v0.3.3
+        uses: Mush-Framework/create-task-definition@v0.3.4
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
@@ -201,6 +201,12 @@ jobs:
               }" \
             --query 'service.serviceArn' \
             --output text)" >> $GITHUB_ENV
+
+      - name: Wait until the app service is stable.
+        run: |
+          aws ecs wait services-stable \
+            --cluster $PROJECT \
+            --services $PROJECT-$PR_NUMBER-$GITHUB_SHA
 
       - name: Get public address of service.
         run: |
