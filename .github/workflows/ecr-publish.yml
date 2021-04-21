@@ -91,7 +91,7 @@ jobs:
             aws iam get-role \
               --role-name ecsTaskExecutionRole \
               | jq -r '.Role.Arn'`"  >> $GITHUB_ENV) & \
-          (echo "efs-id=` \ 
+          (echo "efs-id=` \
             aws efs describe-file-systems \
               --creation-token $FS_TOKEN \
               | jq -r '.FileSystems[0].FileSystemId'`" >> $GITHUB_ENV) & 
