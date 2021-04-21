@@ -118,9 +118,7 @@ jobs:
           FROM alpine:3.13
           COPY $SQL_FILE init.sql
           RUN mkdir efs-file-transfer
-          RUN echo -e '#!/bin/bash\nmv init.sql efs-file-transfer\nls efs-file-transfer' > ./entrypoint.sh
-          RUN ["chmod", "+x", "./entrypoint.sh"]
-          ENTRYPOINT ["./entrypoint.sh"]
+          CMD ["mv", "init.sql", "efs-file-transfer"]
           EOF
 
       - name: Push image for SQL Seeder to ECR
