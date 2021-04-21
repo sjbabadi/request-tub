@@ -211,7 +211,7 @@ jobs:
             $( \
               aws ecs describe-tasks \
               --cluster $PROJECT \
-              -- tasks \
+              --tasks \
                 $( \
                   aws ecs list-tasks \
                   --cluster $PROJECT \
