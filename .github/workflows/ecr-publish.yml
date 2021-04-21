@@ -129,7 +129,7 @@ jobs:
 
       - name: write task definition for image
         id: task-gen
-        uses: Mush-Framework/create-task-definition@v0.3.2
+        uses: Mush-Framework/create-task-definition@v0.3.3
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
@@ -216,7 +216,7 @@ jobs:
                   --cluster $PROJECT \
                   --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA \
                   --query 'taskArns | [0]' \
-                  --output text \
+                  --output text | grep -o "[^/]*$"\
                 ) \
               --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value | [0]' \
               --output text \
