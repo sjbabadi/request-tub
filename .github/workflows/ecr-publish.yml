@@ -1,7 +1,7 @@
 name: Publish Image to ECR
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened, synchronize, closed]
 
 env:
   ECR_REPO: fleet-ecr
@@ -10,6 +10,8 @@ env:
   SQL_FILE: server/db/migration.sql
   BUILDER: gcr.io/buildpacks/builder:v1
   DB_NAME: request_bin
+  SUBNET_NAME: Fleet-Subnet
+  SG_NAME: Fleet-Security-3
   FS_TOKEN: FleetFS
   REGION: us-east-2
   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -18,9 +20,14 @@ jobs:
   # teardown:
   #   runs-on: ubuntu-20.04
   #   steps:
-  #     - name: stop everything
-  #       if: (it's synchronize or close)
-  #       runs: destroy everything
+  #     - name: Delete from ECR
+  #       if: (it's close)
+  # - name: Deregister task definition
+  # if: (synchronize, close)
+  # - name: Stop ECS Service
+  # if: (synchronize, close)
+  # - name: Clear EFS
+  # if: (synchronize, close)
 
   build:
     runs-on: ubuntu-20.04
@@ -28,7 +35,7 @@ jobs:
     steps:
       #   - name: Check Event Type
       #     if: (it's close)
-      #     run: exit 0
+      #     run: happy exit
       - name: Checkout Code
         uses: actions/checkout@v1
 
@@ -58,11 +65,13 @@ jobs:
         id: install-jq
         run: sudo apt-get install jq
 
-      #This step will do four things:
+      #This step will do six things:
       # 1. set the server image arn environment variable
       # 2. set the seeder image arn environment variable
-      # 2. Get the Task Execution Role Arn and set it to an environment variable
-      # 3. Get the fs-id of our EFS and set it to an environment variable
+      # 3. Set Subnet ID environment variable
+      # 4. Set Security Group ID Environment Variable
+      # 5. Get the Task Execution Role Arn and set it to an environment variable
+      # 6. Get the fs-id of our EFS and set it to an environment variable
       - name: set required environment variables
         id: set-env
         env:
@@ -70,11 +79,21 @@ jobs:
         run: |
           (echo "image-arn=$ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER" >> $GITHUB_ENV) & \
           (echo "seed-arn=$ECR_REGISTRY/$ECR_REPO:$PROJECT-seed-$PR_NUMBER" >> $GITHUB_ENV) & \
+          (echo "subnet-id=` \
+            aws ec2 describe-subnets \
+              --filters Name=tag:Name,Values=$SUBNET_NAME \
+              | jq -r '.Subnets[0].SubnetId'`" >> $GITHUB_ENV) & \
+          (echo "sg-id=` \
+            aws ec2 describe-security-groups \
+              --filters Name=group-name,Values=$SG_NAME \
+              | jq -r '.SecurityGroups[0].GroupId'`" >> $GITHUB_ENV) & \
           (echo "task-execution-role-arn=` \
-            aws iam get-role --role-name ecsTaskExecutionRole \
+            aws iam get-role \
+              --role-name ecsTaskExecutionRole \
               | jq -r '.Role.Arn'`"  >> $GITHUB_ENV) & \
           (echo "efs-id=` \ 
-            aws efs describe-file-systems --creation-token $FS_TOKEN \
+            aws efs describe-file-systems \
+              --creation-token $FS_TOKEN \
               | jq -r '.FileSystems[0].FileSystemId'`" >> $GITHUB_ENV) & 
           wait %1
 
@@ -146,3 +165,80 @@ jobs:
       - name: verify the names of the task definitions.
         run: |
           echo ${{ env.app-def }}, ${{ env.seed-def }}
+
+      # Info needed:
+      # Security Group
+      # Subnet
+      - name: Launch the seeder task.
+        run: |
+          echo "task-arn=`aws ecs run-task \
+            --cluster $PROJECT \
+            --task-definition ${{ env.seed-def }} \
+            --count 1 \
+            --launch-type "FARGATE" \
+            --network-configuration "awsvpcConfiguration={ \
+                subnets=[${{ env.subnet-id }}], \
+                securityGroups=[${{ env.sg-id }}], \
+                assignPublicIp=ENABLED \
+              }" | jq -r '.tasks[0].taskArn'`" >> $GITHUB_ENV
+
+      - name: Wait until the seed task completes.
+        run: |
+          aws ecs wait tasks-stopped --tasks ${{ env.task-arn }}
+
+      - name: Launch the app service.
+        run: |
+          echo "service-arn=`aws ecs create-service \
+            --cluster $PROJECT \
+            --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA \
+            --task-definition ${{ env.app.def }} \
+            -- desired-count 1 \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={ \
+                subnets=[${{ env.subnet-id }}], \
+                securityGroups=[${{ env.sg-id }}], \
+                assignPublicIp=ENABLED \
+              }" | jq -r '.service.serviceArn'`" >> $GITHUB_ENV
+
+      - name: Get public address of service.
+        run: |
+          echo "public-url=$(aws ec2 describe-network-interfaces \
+          --network-interface-ids \
+            $( \
+              aws ecs describe-tasks \
+              --cluster $PROJECT \
+              -- tasks \
+                $( \
+                  aws ecs list-tasks \
+                  --cluster $PROJECT \
+                  --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA \
+                  --query 'taskArns | [0]' \
+                  --output text \
+                ) \
+              --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value | [0]'
+              --output text \
+            ) \
+          --query 'NetworkInterfaces[0].Association.PublicDnsName' \
+          --output text)" >> $GITHUB_ENV
+
+      - name: "Comment On PR"
+        uses: actions/github-script@v3
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { 
+            issue: { 
+              number: issue_number 
+            },
+            repo: { 
+              owner, 
+              repo
+            }
+          } = context;
+          github.issues.createComment({
+            issue_number,
+            owner,
+            repo,
+            body: 'Check out the preview here http://${{ env.public-url }}' 
+          });
