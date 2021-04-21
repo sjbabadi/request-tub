@@ -200,6 +200,7 @@ jobs:
                 subnets=[${{ env.subnet-id }}], \
                 securityGroups=[${{ env.sg-id }}], \
                 assignPublicIp=ENABLED \
+              }" /
             --query 'service.serviceArn' \
             --output text)" >> $GITHUB_ENV
 
