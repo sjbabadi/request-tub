@@ -35,10 +35,10 @@ const App = () => {
     <div>
       <Header />
       <Switch>
-        <Route path="/request-bin/tub/:slug">
+        <Route path="/tub/:slug">
           <Bin slug={slug} />
         </Route>
-        <Route path="/request-bin/">
+        <Route path="/">
           <Home />
         </Route>
       </Switch>
