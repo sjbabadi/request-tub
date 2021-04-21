@@ -219,7 +219,7 @@ jobs:
                   --query 'taskArns | [0]' \
                   --output text \
                 ) \
-              --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value | [0]'
+              --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value | [0]' \
               --output text \
             ) \
           --query 'NetworkInterfaces[0].Association.PublicDnsName' \
