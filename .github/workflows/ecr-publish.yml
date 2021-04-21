@@ -182,7 +182,7 @@ jobs:
                 assignPublicIp=ENABLED \
               }" \
             --query 'tasks[0].taskArn' \
-            --output text) >> $GITHUB_ENV
+            --output text)" >> $GITHUB_ENV
 
       - name: Wait until the seed task completes.
         run: |
@@ -201,7 +201,7 @@ jobs:
                 securityGroups=[${{ env.sg-id }}], \
                 assignPublicIp=ENABLED \
             --query 'service.serviceArn'
-            --output text) >> $GITHUB_ENV
+            --output text)" >> $GITHUB_ENV
 
       - name: Get public address of service.
         run: |
