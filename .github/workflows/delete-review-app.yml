@@ -89,7 +89,7 @@ jobs:
           docker build -t $IMAGE -f- . <<EOF
           FROM alpine:3.13
           RUN mkdir /efs-file-transfer
-          RUN echo -e '#!/bin/sh\nrm -rf /efs-file-transfer/*' > /startup.sh
+          RUN echo -e '#!/bin/sh\nrm -rf /efs-file-transfer/*\nls ./efs-file-transfer/\necho hello!' > /startup.sh
           RUN chmod +x /startup.sh
           ENTRYPOINT ["/startup.sh"]
           EOF
