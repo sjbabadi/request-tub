@@ -72,37 +72,37 @@ jobs:
         id: aws-ids
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: >
-          (echo "::set-output name=image-arn::$ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER") && 
-          (echo "::set-output name=seed-arn::$ECR_REGISTRY/$ECR_REPO:$PROJECT-seed-$PR_NUMBER") && 
-          (echo "::set-output name=subnet-id::$(
-            aws ec2 describe-subnets
-              --filters Name=tag:Name,Values=$SUBNET_NAME
-              --query 'Subnets[0].SubnetId'
-              --output text)") &&
-          (echo "::set-output name=sg-id::$(
-            aws ec2 describe-security-groups
-              --filters Name=group-name,Values=$SG_NAME
-              --query 'SecurityGroups[0].GroupId'
-              --output text)") &&
-          (echo "::set-output name=task-execution-role-arn::$(
-            aws iam get-role
-              --role-name ecsTaskExecutionRole
-              --query 'Role.Arn'
-              --output text)") &&
-          (echo "::set-output name=efs-id::$(
-            aws efs describe-file-systems
-              --creation-token $FS_TOKEN
-              --query 'FileSystems[0].FileSystemId'
+        run: |
+          (echo "::set-output name=image-arn::$ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER") && \
+          (echo "::set-output name=seed-arn::$ECR_REGISTRY/$ECR_REPO:$PROJECT-seed-$PR_NUMBER") && \
+          (echo "::set-output name=subnet-id::$( \
+            aws ec2 describe-subnets \
+              --filters Name=tag:Name,Values=$SUBNET_NAME \
+              --query 'Subnets[0].SubnetId' \
+              --output text)") && \
+          (echo "::set-output name=sg-id::$( \
+            aws ec2 describe-security-groups \
+              --filters Name=group-name,Values=$SG_NAME \
+              --query 'SecurityGroups[0].GroupId' \
+              --output text)") && \
+          (echo "::set-output name=task-execution-role-arn::$( \
+            aws iam get-role \
+              --role-name ecsTaskExecutionRole \
+              --query 'Role.Arn' \
+              --output text)") && \
+          (echo "::set-output name=efs-id::$( \
+            aws efs describe-file-systems \
+              --creation-token $FS_TOKEN \
+              --query 'FileSystems[0].FileSystemId' \
               --output text)")
 
         #TODO: New step: Pull the google builder & cache?
       - name: build, tag, and push image using Google Builder
         id: build-server
-        run: > # --cache-image $ECR_REGISTRY/$ECR_REPO:cache \
-          pack build ${{ steps.aws-ids.outputs.image-arn }}
-          --builder $BUILDER
-          --path $SERVER_PATH
+        run: | # --cache-image $ECR_REGISTRY/$ECR_REPO:cache \
+          pack build ${{ steps.aws-ids.outputs.image-arn }} \
+          --builder $BUILDER \
+          --path $SERVER_PATH \
           --publish
 
       # What more do we need access to?
@@ -144,26 +144,26 @@ jobs:
           pr-number: ${{ env.PR_NUMBER}}
 
       - name: write task definition to file.
-        run: >
-          echo '${{ steps.task-gen.outputs.seeder-task-definition }}' >> ./seed-task.json &&
-          echo '${{ steps.task-gen.outputs.service-task-definition }}' >> ./app-task.json
+        run: |
+          echo '${{ steps.task-gen.outputs.seeder-task-definition }}' > ./seed-task.json && \
+          echo '${{ steps.task-gen.outputs.service-task-definition }}' > ./app-task.json
 
       - name: register task definition of seeder.
         id: seed-task-def
-        run: >
-          echo "::set-output name=seed-def::$(aws ecs register-task-definition 
-          --family $PROJECT-setup 
-          --cli-input-json file://seed-task.json 
-          --query 'join(`:`,taskDefinition.[family,to_string(revision)])' 
+        run: |
+          echo "::set-output name=seed-def::$(aws ecs register-task-definition \
+          --family $PROJECT-setup \
+          --cli-input-json file://seed-task.json \
+          --query 'join(`:`,taskDefinition.[family,to_string(revision)])' \
           --output text)"
 
       - name: register task definition of review app.
         id: app-task-def
-        run: >
-          echo "::set-output name=app-def::$(aws ecs register-task-definition 
-           --family $PROJECT 
-           --cli-input-json file://app-task.json 
-           --query 'join(`:`,taskDefinition.[family,to_string(revision)])' 
+        run: |
+          echo "::set-output name=app-def::$(aws ecs register-task-definition \
+           --family $PROJECT \
+           --cli-input-json file://app-task.json \
+           --query 'join(`:`,taskDefinition.[family,to_string(revision)])' \
            --output text)"
 
       - name: verify the names of the task definitions.
@@ -172,18 +172,18 @@ jobs:
 
       - name: Launch the seeder task.
         id: launch-seed-task
-        run: >
-          echo "::set-output name=task-arn::$(aws ecs run-task
-            --cluster $PROJECT
-            --task-definition ${{ steps.seed-task-def.outputs.seed-def }}
-            --count 1
-            --launch-type "FARGATE"
-            --network-configuration "awsvpcConfiguration={
-                subnets=[${{ steps.aws-ids.outputs.subnet-id }}],
-                securityGroups=[${{ steps.aws-ids.outputs.sg-id }}],
-                assignPublicIp=ENABLED
-              }"
-            --query 'tasks[0].taskArn'
+        run: |
+          echo "::set-output name=task-arn::$(aws ecs run-task \
+            --cluster $PROJECT \
+            --task-definition ${{ steps.seed-task-def.outputs.seed-def }} \
+            --count 1 \
+            --launch-type "FARGATE" \
+            --network-configuration "awsvpcConfiguration={ \
+                subnets=[${{ steps.aws-ids.outputs.subnet-id }}], \
+                securityGroups=[${{ steps.aws-ids.outputs.sg-id }}], \
+                assignPublicIp=ENABLED \
+              }" \
+            --query 'tasks[0].taskArn' \
             --output text)"
 
       - name: Wait until the seed task completes.
@@ -191,45 +191,45 @@ jobs:
           aws ecs wait tasks-stopped --cluster $PROJECT --tasks ${{ steps.launch-seed-task.outputs.task-arn }}
 
       - name: Launch the app service.
-        run: >
-          echo "::set-output name=service-arn::$(aws ecs create-service
-            --cluster $PROJECT
-            --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA
-            --task-definition ${{ steps.app-task-def.outputs.app-def }}
-            --desired-count 1
-            --launch-type FARGATE
-            --network-configuration "awsvpcConfiguration={
-                subnets=[${{ steps.aws-ids.outputs.subnet-id }}],
-                securityGroups=[${{ steps.aws-ids.outputs.sg-id }}],
-                assignPublicIp=ENABLED
-              }"
-            --query 'service.serviceArn'
+        run: |
+          echo "::set-output name=service-arn::$(aws ecs create-service \
+            --cluster $PROJECT \
+            --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA \
+            --task-definition ${{ steps.app-task-def.outputs.app-def }} \
+            --desired-count 1 \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={ \
+                subnets=[${{ steps.aws-ids.outputs.subnet-id }}], \
+                securityGroups=[${{ steps.aws-ids.outputs.sg-id }}], \
+                assignPublicIp=ENABLED \
+              }" \
+            --query 'service.serviceArn' \
             --output text)"
 
       - name: Wait until the app service is stable.
-        run: >
-          aws ecs wait services-stable
-            --cluster $PROJECT
+        run: |
+          aws ecs wait services-stable \
+            --cluster $PROJECT \
             --services $PROJECT-$PR_NUMBER-$GITHUB_SHA
 
       - name: Get public address of service.
         id: get-public-url
-        run: >
-          echo "::set-output name=public-url::$(aws ec2 describe-network-interfaces
-          --network-interface-ids $(
-              aws ecs describe-tasks
-                --cluster $PROJECT
-                --tasks $(
-                    aws ecs list-tasks
-                      --cluster $PROJECT
-                      --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA
-                      --query 'taskArns | [0]'
-                      --output text | grep -o "[^/]*$"\
-                  )
-                --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value | [0]'
-                --output text
-            )
-          --query 'NetworkInterfaces[0].Association.PublicDnsName'
+        run: |
+          echo "::set-output name=public-url::$(aws ec2 describe-network-interfaces \
+          --network-interface-ids $( \
+              aws ecs describe-tasks \
+                --cluster $PROJECT \
+                --tasks $( \
+                    aws ecs list-tasks \
+                      --cluster $PROJECT \
+                      --service-name $PROJECT-$PR_NUMBER-$GITHUB_SHA \
+                      --query 'taskArns | [0]' \
+                      --output text | grep -o "[^/]*$" \
+                  ) \
+                --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value | [0]' \
+                --output text \
+            ) \
+          --query 'NetworkInterfaces[0].Association.PublicDnsName' \
           --output text)"
 
       - name: "Comment On PR"
