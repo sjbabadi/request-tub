@@ -100,7 +100,7 @@ jobs:
       - name: build, tag, and push image using Google Builder
         id: build-server
         run: > # --cache-image $ECR_REGISTRY/$ECR_REPO:cache \
-          pack build ${{steps.aws-ids.outputs.image-arn}}
+          pack build ${{ steps.aws-ids.outputs.image-arn }}
           --builder $BUILDER
           --path $SERVER_PATH
           --publish
@@ -114,7 +114,7 @@ jobs:
       - name: Create image for SQL Seeder
         id: make-sql-seeder
         run: |
-          docker build -t chrisdurand/seeder:latest -f- .  <<EOF
+          docker build -t ${{ steps.aws-ids.outputs.seed-arn }} -f- .  <<EOF
           FROM alpine:3.13
           COPY $SQL_FILE init.sql
           RUN echo -e '#!/bin/sh\nmv ./init.sql ./efs-file-transfer/\nls ./efs-file-transfer/' >> ./startup.sh
