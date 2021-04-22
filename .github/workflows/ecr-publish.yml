@@ -1,4 +1,4 @@
-name: Publish Image to ECR
+name: Create Review App
 on:
   pull_request:
     types: [opened]
