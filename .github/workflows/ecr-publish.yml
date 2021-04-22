@@ -152,7 +152,7 @@ jobs:
         id: seed-task-def
         run: |
           echo "::set-output name=seed-def::$(aws ecs register-task-definition \
-          --family $PROJECT-setup \
+          --family $PROJECT-setup-$PR_NUMBER \
           --cli-input-json file://seed-task.json \
           --query 'join(`:`,taskDefinition.[family,to_string(revision)])' \
           --output text)"
@@ -161,7 +161,7 @@ jobs:
         id: app-task-def
         run: |
           echo "::set-output name=app-def::$(aws ecs register-task-definition \
-           --family $PROJECT \
+           --family $PROJECT-$PR_NUMBER \
            --cli-input-json file://app-task.json \
            --query 'join(`:`,taskDefinition.[family,to_string(revision)])' \
            --output text)"
