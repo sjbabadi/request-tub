@@ -142,7 +142,7 @@ jobs:
 
           echo "::set-output name=data-ap-id::$( \
             aws efs create-access-point \
-              --client-token $PROJECT-$PR_NUMBER \
+              --client-token $PROJECT-$PR_NUMBER-data \
               --file-system-id ${{ steps.aws-ids.outputs.efs-id }} \
               --root-directory "Path=/$PROJECT-$PR_NUMBER/data,CreationInfo={OwnerUid=0,OwnerGid=0,Permissions=777}" \
               --query 'AccessPointId' \
