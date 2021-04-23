@@ -251,7 +251,7 @@ jobs:
             --output text)
 
           echo "::set-output name=public-url::$(aws ec2 describe-network-interfaces \
-          --network-interface-ids INTERFACE_ID \
+          --network-interface-ids $INTERFACE_ID \
           --query 'NetworkInterfaces[0].Association.PublicDnsName' \
           --output text)"
 
