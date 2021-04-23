@@ -86,13 +86,18 @@ jobs:
           IMAGE=${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$PROJECT-deleter-$PR_NUMBER
 
           echo "::set-output name=deleter-image-arn::$IMAGE"
-          docker build -t $IMAGE -f- . <<EOF
+          docker build -t $IMAGE -f- . <<DOCKERFILE
           FROM alpine:3.13
           RUN mkdir /efs-file-transfer
-          RUN echo -e '#!/bin/sh\nrm -rf /efs-file-transfer/*\nls ./efs-file-transfer/\necho hello!' > /startup.sh
+          RUN cat << SCRIPT > /startup.sh
+          #!/bin/sh
+          rm -rf /efs-file-transfer/$PROJECT-$PR_NUMBER
+          ls ./efs-file-transfer/$PROJECT-PR_NUMBER
+          echo There should be an error above, No such file or directory
+          SCRIPT
           RUN chmod +x /startup.sh
           ENTRYPOINT ["/startup.sh"]
-          EOF
+          DOCKERFILE
 
       - name: Push Deleter to ECR
         id: push-deleter
