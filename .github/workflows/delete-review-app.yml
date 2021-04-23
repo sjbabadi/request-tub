@@ -104,7 +104,12 @@ jobs:
           RUN mkdir /efs-file-transfer
           RUN cat << SCRIPT > /startup.sh
           #!/bin/sh
+          echo before delete, here's the root:
+          ls ./efs-file-transfer/
           rm -rf /efs-file-transfer/$PROJECT-$PR_NUMBER
+          echo after delete, here's the root:
+          ls ./efs-file-transfer/
+          echo try to list files in /$PROJECT-PR_NUMBER:
           ls ./efs-file-transfer/$PROJECT-PR_NUMBER
           echo There should be an error above, No such file or directory
           SCRIPT
