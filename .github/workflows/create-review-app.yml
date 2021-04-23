@@ -128,7 +128,7 @@ jobs:
         run: |
           docker push ${{ steps.aws-ids.outputs.seed-arn }}
 
-      - name: Create Access Points for `/$PROJECT-$PR_NUMBER/seed` and `/$PROJECT-$PR_NUMBER/data`
+      - name: Create Access Points for seed and data
         id: create-access-points
         run: |
           echo "::set-output name=seed-ap-id::$( \
