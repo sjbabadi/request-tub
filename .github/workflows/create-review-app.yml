@@ -128,7 +128,28 @@ jobs:
         run: |
           docker push ${{ steps.aws-ids.outputs.seed-arn }}
 
-      - name: write task definition for image
+      - name: Create Access Points for `/$PROJECT-$PR_NUMBER/seed` and `/$PROJECT-$PR_NUMBER/data`
+        id: create-access-points
+        run: |
+          echo "::set-output name=seed-ap-id::$( \
+            aws efs create-access-point \
+              --client-token $PROJECT-$PR_NUMBER-seed \
+              --file-system-id ${{ steps.aws-ids.outputs.efs-id }} \
+              --root-directory "Path=/$PROJECT-$PR_NUMBER/seed,CreationInfo={OwnerUid=0,OwnerGid=0,Permissions=777}" \
+              --query 'AccessPointId' \
+              --output text \
+          )"
+
+          echo "::set-output name=data-ap-id::$( \
+            aws efs create-access-point \
+              --client-token $PROJECT-$PR_NUMBER \
+              --file-system-id ${{ steps.aws-ids.outputs.efs-id }} \
+              --root-directory "Path=/$PROJECT-$PR_NUMBER/data,CreationInfo={OwnerUid=0,OwnerGid=0,Permissions=777}" \
+              --query 'AccessPointId' \
+              --output text \
+          )"
+
+      - name: write task definitions for seeder task and app service
         id: task-gen
         uses: Mush-Framework/create-task-definition@v0.3.3
         env:
@@ -142,6 +163,8 @@ jobs:
           task-execution-role-arn: ${{ steps.aws-ids.outputs.task-execution-role-arn }}
           region: ${{ env.REGION }}
           pr-number: ${{ env.PR_NUMBER}}
+          seed-access-point: ${{ steps.create-access-points.outputs.seed-ap-id }}
+          data-access-point: ${{ steps.create-access-points.outputs.data-ap-id }}
 
       - name: write task definition to file.
         run: |
