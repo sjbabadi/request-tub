@@ -151,7 +151,7 @@ jobs:
 
       - name: write task definitions for seeder task and app service
         id: task-gen
-        uses: Mush-Framework/create-task-definition@v0.3.9
+        uses: Mush-Framework/create-task-definition@v0.4.0
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
