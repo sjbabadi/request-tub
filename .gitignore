@@ -2,3 +2,5 @@ node_modules
 front-end/node_modules
 .env
 build/
+task.json
+request-bin.code-workspace
