@@ -10,7 +10,7 @@ const get = (slug) => {
 }
 
 const create = () => {
-  const request = axios.post('/tubs')
+  const request = axios.post(`/tubs`)
   return request.then(response => response.data.uri)
 }
 
