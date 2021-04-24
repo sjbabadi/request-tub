@@ -2,3 +2,7 @@ node_modules
 front-end/node_modules
 .env
 build/*
+.github/workflows/clone.yml
+.github/workflows/test.yml
+task.json
+request-bin.code-workspace
