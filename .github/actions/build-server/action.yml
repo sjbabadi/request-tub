@@ -9,9 +9,20 @@ runs:
         sudo apt-get update && \
         sudo apt-get install pack-cli
       shell: bash
+
+    # If your application needs environment variables to run,
+    # Create github secrets for them and put them in the file
+    # on line 18.
+    # - run: |
+    #     cat << ENV > ./.env
+    #       VAR1=${{ secrets.ENV_VAR1 }}
+    #      ENV
+    #   shell: bash
     - run: | # --cache-image $ECR_REGISTRY/$ECR_REPO:cache \
+        IMAGE_ARN=$ECR_REGISTRY/$ECR_REPO:$PROJECT-$PR_NUMBER
         pack build $IMAGE_ARN \
         --builder $BUILDER \
         --path $SERVER_PATH \
         --publish
+        echo "IMAGE_ARN=$IMAGE_ARN" >> $GITHUB_ENV
       shell: bash
